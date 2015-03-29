@@ -1,46 +1,15 @@
-femme(anne).
-femme(betty).
-femme(lisa).
-femme(sylvie).
-femme(eve).
-femme(julie).
-femme(valerie).
+homme(X):- member(X, [marc, luc, jean, jules, leon, loic, gerard, jacques, herve, paul]).
+femme(X):- member(X, [anne, betty, lisa, sylvie, eve, julie, valerie]).
 
-homme(marc).
-homme(luc).
-homme(jean).
-homme(jules).
-homme(leon).
-homme(loic).
-homme(gerard).
-homme(jacques).
-homme(herve).
-homme(paul).
+mari_de(M, F):- member([M, F], [[marc, anne], [luc, betty], [jules, lisa], [leon, sylvie], [loic, eve], [paul, julie]]).
+femme_de(F, M):- mari_de(M, F).
 
-mari_de(marc, anne).
-mari_de(luc, betty).
-mari_de(jules, lisa).
-mari_de(leon, sylvie).
-mari_de(loic, eve).
-mari_de(paul, julie).
+enfant_de(E, P):- member([Enfant, Parent], [[[jean, jules, leon], [marc, anne]], [[lisa, loic, gerard], [luc, betty]], [[jacques],[jules, lisa]], [[herve, julie], [leon, sylvie]], [[paul, valerie], [loic, eve]]]), member(E, Enfant), member(P, Parent).
 
-enfant_de(jean, marc).
-enfant_de(jules, marc).
-enfant_de(leon, marc).
-enfant_de(lisa, luc).
-enfant_de(loic, luc).
-enfant_de(gerard, luc).
-enfant_de(jacques, jules).
-enfant_de(herve, leon).
-enfant_de(julie, leon).
-enfant_de(paul, loic).
-enfant_de(valerie, loic).
+beaupere_de(BP, P):-femme(P), mari_de(M, P), enfant_de(M, BP), homme(BP).
+beaupere_de(BP, P):-homme(P), femme_de(F, P), enfant_de(F, BP), homme(BP).
 
-enfant_de(X, Z) :- mari_de(Y, Z), enfant_de(X, Y).
-femme_de(Femme, Mari) :- mari_de(Mari, Femme).
-beaupere_de(B, X):- homme(B), mari_de(X, F), enfant_de(F, B).
-beaupere_de(B, X):- homme(B), femme_de(X, M), enfant_de(M, B).
-bellemere_de(B, X):- femme(B), mari_de(M, X), enfant_de(M, B).
-bellemere_de(B, X):- femme(B), femme_de(F, X), enfant_de(F, B).
-ancetre_de(A, B) :- enfant_de(B, A).
-ancetre_de(A, C) :- enfant_de(B, A), ancetre_de(B, C).
+bellemere_de(BM, P):-femme_de(BM, BP), beaupere_de(BP, P).
+
+ancetre(X, Y) :- enfant_de(Y, X).
+ancetre(X, Z) :- enfant_de(Y, X), ancetre(Y, Z).
